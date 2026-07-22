@@ -17,6 +17,12 @@ resource "google_bigquery_dataset_iam_member" "dataset" {
   dataset_id = google_bigquery_dataset.managed_datasets[each.value.dataset_name].dataset_id
   role       = "roles/${each.value.role}"
   member     = each.value.member
+
+  lifecycle {
+    replace_triggered_by = [
+      google_bigquery_dataset.managed_datasets[each.value.dataset_name]
+    ]
+  }
 }
 
 resource "google_storage_bucket_iam_member" "bucket" {
@@ -25,4 +31,10 @@ resource "google_storage_bucket_iam_member" "bucket" {
   bucket = google_storage_bucket.buckets[each.value.bucket_name].name
   role   = "roles/${each.value.role}"
   member = each.value.member
+
+  lifecycle {
+    replace_triggered_by = [
+      google_storage_bucket.buckets[each.value.bucket_name]
+    ]
+  }
 }
