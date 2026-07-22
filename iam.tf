@@ -20,7 +20,7 @@ resource "google_bigquery_dataset_iam_member" "dataset" {
 
   lifecycle {
     replace_triggered_by = [
-      google_bigquery_dataset.managed_datasets[each.value.dataset_name]
+      google_bigquery_dataset.managed_datasets
     ]
   }
 }
@@ -34,7 +34,7 @@ resource "google_storage_bucket_iam_member" "bucket" {
 
   lifecycle {
     replace_triggered_by = [
-      google_storage_bucket.buckets[each.value.bucket_name]
+      google_storage_bucket.buckets
     ]
   }
 }
