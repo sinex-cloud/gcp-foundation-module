@@ -1,5 +1,5 @@
 locals {
-  valid_environments = ["dev", "int"]
+  valid_environments = local.yaml.project.environments
 
   validate_environment = (
     contains(local.valid_environments, var.env)

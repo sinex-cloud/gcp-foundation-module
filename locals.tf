@@ -2,14 +2,10 @@ locals {
   # -----------------------------
   # Load + parse config
   # -----------------------------
-  content_yaml_resources_file = templatefile(var.path_to_yaml_resources_file, { env = var.env })
+  content_yaml_resources_file = file(var.path_to_yaml_resources_file)
   yaml                        = yamldecode(local.content_yaml_resources_file)
 
   project_short_name = local.yaml.project.project_short_name
-
-  # Maps a foundation.yaml member type to its GCP IAM member prefix. A lookup
-  # map (not a chained ternary) so an unexpected key in the YAML fails the plan
-  # loudly instead of silently defaulting to the wrong prefix.
   member_type_prefixes = {
     users             = "user"
     groups            = "group"
@@ -27,7 +23,7 @@ locals {
           member = "${local.member_type_prefixes[member_type]}:${member}"
         }
       ]
-    ]
+    ] if contains(permission.environments, var.env)
   ])
 
   # -----------------------------
