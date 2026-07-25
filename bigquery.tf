@@ -5,12 +5,9 @@ resource "google_bigquery_dataset" "managed_datasets" {
   project    = var.project
   location   = each.value.location
 
-  labels = {
-    environment = var.env
-    managed_by  = "terraform"
-  }
-
-  depends_on = [
-    local.validate_environment,
-  ]
+  labels = merge(
+    local.common_labels,
+    { component = "bigquery" },
+    try(each.value.labels, {})
+  )
 }

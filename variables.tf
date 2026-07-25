@@ -6,6 +6,11 @@ variable "path_to_yaml_resources_file" {
 variable "env" {
   type        = string
   description = "Environment name (dev, int)"
+
+  validation {
+    condition     = contains(["dev", "int"], var.env)
+    error_message = "env must be one of: dev, int."
+  }
 }
 
 variable "project" {
