@@ -76,6 +76,15 @@ resource "google_secret_manager_secret_iam_member" "agent_reads_webhook_secret" 
   member    = "serviceAccount:${google_service_account.agent_review.email}"
 }
 
+# --- cb_plan mints a GitHub App JWT to post the review as a PR comment
+# (final step of review.cloudbuild.yaml) ---
+
+resource "google_secret_manager_secret_iam_member" "cb_plan_reads_github_app_key" {
+  secret_id = google_secret_manager_secret.platform["github-app-key"].secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.cb_plan.email}"
+}
+
 # --- cb_plan / cb_apply impersonate sa-tf-deployer to run Terraform ---
 
 resource "google_service_account_iam_member" "cb_plan_impersonates_deployer" {
