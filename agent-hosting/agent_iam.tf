@@ -40,6 +40,15 @@ resource "google_project_iam_member" "agent_review_triggers_builds" {
   member  = "serviceAccount:${google_service_account.agent_review.email}"
 }
 
+# builds.editor alone can't read the Developer Connect repository referenced
+# by source.connectedRepository -- that needs cloudbuild.repositories.get,
+# only granted by connectionViewer (or a higher connection role).
+resource "google_project_iam_member" "agent_review_reads_connection" {
+  project = var.project
+  role    = "roles/cloudbuild.connectionViewer"
+  member  = "serviceAccount:${google_service_account.agent_review.email}"
+}
+
 resource "google_project_iam_member" "cb_plan_log_writer" {
   project = var.project
   role    = "roles/logging.logWriter"
