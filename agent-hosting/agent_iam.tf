@@ -32,6 +32,14 @@ resource "google_project_iam_member" "agent_review_log_writer" {
   member  = "serviceAccount:${google_service_account.agent_review.email}"
 }
 
+# --- Agent triggers Cloud Build (cloudbuild_client.py) for each reviewed PR ---
+
+resource "google_project_iam_member" "agent_review_triggers_builds" {
+  project = var.project
+  role    = "roles/cloudbuild.builds.editor"
+  member  = "serviceAccount:${google_service_account.agent_review.email}"
+}
+
 resource "google_project_iam_member" "cb_plan_log_writer" {
   project = var.project
   role    = "roles/logging.logWriter"
