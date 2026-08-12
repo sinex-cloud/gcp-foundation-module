@@ -38,6 +38,9 @@ resource "google_cloud_run_v2_service" "agent" {
       condition     = var.env == "dev"
       error_message = "Agent-hosting infrastructure (Cloud Run agent, Artifact Registry, Secret Manager, service accounts) is dev-only by design — the review-agent platform itself is explicitly not deployed to int. A failing plan here blocks the whole apply, including the other resources in this module."
     }
+    # Image is deployed via `gcloud run deploy` outside Terraform, so Terraform
+    # doesn't fight manual deploys or revert to the placeholder on every apply.
+    ignore_changes = [template[0].containers[0].image]
   }
 }
 
