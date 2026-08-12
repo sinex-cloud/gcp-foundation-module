@@ -1,5 +1,5 @@
 resource "google_cloud_run_v2_service" "agent" {
-  name     = "infra-review-agent-${var.env}" # e.g. infra-review-agent-dev
+  name     = "infra-review-agent-${var.env}"
   location = var.region
   project  = var.project
 
@@ -11,6 +11,16 @@ resource "google_cloud_run_v2_service" "agent" {
       # ^ placeholder image so we can verify the pipeline end-to-end.
       # Swap for <region>-docker.pkg.dev/<project>/infra-agent-images-<env>/agent:<tag>
       # (the repo from registry.tf) once the real agent image is built and pushed.
+
+      env {
+        name = "GITHUB_WEBHOOK_SECRET"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.platform["github-webhook-secret"].secret_id
+            version = "latest"
+          }
+        }
+      }
     }
   }
 

@@ -1,6 +1,6 @@
 resource "google_artifact_registry_repository" "agent_images" {
-  location      = var.region                      # europe-west1
-  repository_id = "infra-agent-images-${var.env}" # e.g. infra-agent-images-dev or infra-agent-images-int
+  location      = var.region
+  repository_id = "infra-agent-images-${var.env}"
   format        = "DOCKER"
   description   = "Container images for the infra-review agent Cloud Run service (${var.env})"
 

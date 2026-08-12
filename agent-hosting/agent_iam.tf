@@ -52,6 +52,16 @@ resource "google_storage_bucket_iam_member" "cb_plan_writes_artifacts" {
   member = "serviceAccount:${google_service_account.cb_plan.email}"
 }
 
+# --- cb_plan runs as a custom SA, so it needs explicit read access to the
+# auto-created Cloud Build staging bucket (gcloud builds submit uploads
+# source there before the build starts) ---
+
+resource "google_storage_bucket_iam_member" "cb_plan_reads_source_staging" {
+  bucket = "${var.project}_cloudbuild"
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.cb_plan.email}"
+}
+
 # --- Agent needs to read its two secrets (secret-scoped, not project-wide) ---
 
 resource "google_secret_manager_secret_iam_member" "agent_reads_github_app_key" {
@@ -66,7 +76,7 @@ resource "google_secret_manager_secret_iam_member" "agent_reads_webhook_secret" 
   member    = "serviceAccount:${google_service_account.agent_review.email}"
 }
 
-# --- cb_plan / cb_apply impersonate sa-tf-deployer to run Terraform, same as done manually ---
+# --- cb_plan / cb_apply impersonate sa-tf-deployer to run Terraform ---
 
 resource "google_service_account_iam_member" "cb_plan_impersonates_deployer" {
   service_account_id = local.tf_deployer_id

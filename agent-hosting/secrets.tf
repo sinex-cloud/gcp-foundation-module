@@ -11,7 +11,7 @@ resource "google_secret_manager_secret" "platform" {
   for_each = local.platform_secrets
 
   project   = var.project
-  secret_id = "infra-agent-${each.key}-${var.env}" # e.g. infra-agent-github-app-key-dev
+  secret_id = "infra-agent-${each.key}-${var.env}"
 
   replication {
     auto {} # let Google pick replica regions; we don't need region-pinned replication for secrets this small
