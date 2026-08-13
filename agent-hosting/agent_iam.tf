@@ -112,6 +112,15 @@ resource "google_secret_manager_secret_iam_member" "cb_plan_reads_github_app_key
   member    = "serviceAccount:${google_service_account.cb_plan.email}"
 }
 
+# --- cb_plan calls the LLM provider to generate the AI review
+# (review-generation step of review.cloudbuild.yaml) ---
+
+resource "google_secret_manager_secret_iam_member" "cb_plan_reads_model_api_key" {
+  secret_id = google_secret_manager_secret.platform["model-api-key"].secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.cb_plan.email}"
+}
+
 # --- cb_plan / cb_apply impersonate sa-tf-deployer to run Terraform ---
 
 resource "google_service_account_iam_member" "cb_plan_impersonates_deployer" {
