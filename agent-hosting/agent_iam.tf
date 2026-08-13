@@ -49,6 +49,16 @@ resource "google_project_iam_member" "agent_review_reads_connection" {
   member  = "serviceAccount:${google_service_account.agent_review.email}"
 }
 
+# The build review.cloudbuild.yaml creates runs as cb_plan (serviceAccount
+# field in the YAML) -- agent_review, as the caller creating that build,
+# needs actAs on cb_plan specifically, same as any resource launched to run
+# as another SA.
+resource "google_service_account_iam_member" "agent_review_acts_as_cb_plan" {
+  service_account_id = google_service_account.cb_plan.name
+  role                = "roles/iam.serviceAccountUser"
+  member              = "serviceAccount:${google_service_account.agent_review.email}"
+}
+
 resource "google_project_iam_member" "cb_plan_log_writer" {
   project = var.project
   role    = "roles/logging.logWriter"
