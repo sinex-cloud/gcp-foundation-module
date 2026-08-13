@@ -55,8 +55,15 @@ resource "google_project_iam_member" "agent_review_reads_connection" {
 # as another SA.
 resource "google_service_account_iam_member" "agent_review_acts_as_cb_plan" {
   service_account_id = google_service_account.cb_plan.name
-  role                = "roles/iam.serviceAccountUser"
-  member              = "serviceAccount:${google_service_account.agent_review.email}"
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${google_service_account.agent_review.email}"
+}
+
+# Same reasoning as above, for apply.cloudbuild.yaml running as cb_apply.
+resource "google_service_account_iam_member" "agent_review_acts_as_cb_apply" {
+  service_account_id = google_service_account.cb_apply.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${google_service_account.agent_review.email}"
 }
 
 resource "google_project_iam_member" "cb_plan_log_writer" {
