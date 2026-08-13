@@ -119,6 +119,15 @@ resource "google_secret_manager_secret_iam_member" "cb_plan_reads_github_app_key
   member    = "serviceAccount:${google_service_account.cb_plan.email}"
 }
 
+# --- cb_apply posts the apply result as a PR comment
+# (post-apply-comment step of apply.cloudbuild.yaml) ---
+
+resource "google_secret_manager_secret_iam_member" "cb_apply_reads_github_app_key" {
+  secret_id = google_secret_manager_secret.platform["github-app-key"].secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.cb_apply.email}"
+}
+
 # --- cb_plan calls the LLM provider to generate the AI review
 # (review-generation step of review.cloudbuild.yaml) ---
 
